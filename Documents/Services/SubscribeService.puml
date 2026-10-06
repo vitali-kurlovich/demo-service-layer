@@ -1,0 +1,12 @@
+@startuml
+title SubscribeService
+
+protocol SubscribeService {
+    + subsribe(Set<String>)
+    + unsubsribe(Set<String>)
+}
+
+
+
+@enduml
+

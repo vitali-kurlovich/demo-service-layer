@@ -1,0 +1,17 @@
+@startuml
+
+!include Data/Symbol.puml
+!include Error/FetchError.puml 
+
+title CryptoPairsService
+
+struct CryptoPair {
+    + symbol: Symbol
+}
+
+protocol CryptoPairsService {
+    + cryptoPairs() async throws(FetchError) : Array<CryptoPair>
+}
+
+@enduml
+

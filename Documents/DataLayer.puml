@@ -1,0 +1,17 @@
+@startuml
+
+
+package "demo-service-layer: DataLayer" {
+!include Services/SubscribeService.puml
+!include Services/SymbolPriceService.puml
+!include Services/CommoditiesPairsService.puml
+!include Services/ConnectivityService.puml
+!include Services/CryptoPairsService.puml
+!include Services/ForexPairsService.puml
+!include Services/StocksService.puml
+!include Services/CommoditiesPairsService.puml
+}
+
+title DataLayer
+
+@enduml

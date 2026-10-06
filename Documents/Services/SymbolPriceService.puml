@@ -1,0 +1,19 @@
+@startuml
+
+!include SubscribeService.puml
+
+title SymbolPriceService
+
+struct SymbolPrice {
+    + symbol
+    + price : Decimal
+    + timestamp : Date
+}
+
+protocol SymbolPriceService {
+    + prices : Stream<SymbolPrice>
+}
+
+SymbolPriceService --|> SubscribeService
+
+@enduml

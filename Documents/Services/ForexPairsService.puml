@@ -1,0 +1,16 @@
+@startuml
+
+!include Data/Symbol.puml
+!include Error/FetchError.puml 
+
+title ForexPairsService
+
+struct ForexPair {
+    + symbol: Symbol
+}
+
+protocol ForexPairsService {
+    + forexPairs() async throws(FetchError) : Array<ForexPair>
+}
+
+@enduml

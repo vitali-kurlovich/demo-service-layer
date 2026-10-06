@@ -1,0 +1,19 @@
+@startuml
+
+!include Data/Symbol.puml
+!include Error/FetchError.puml 
+
+title CommoditiesPairsService
+
+
+struct CommoditiesPair {
+    + symbol: Symbol
+}
+
+protocol CommoditiesPairsService {
+    + commodities() async throws(FetchError) : Array<CommoditiesPair>
+}
+
+@enduml
+
+

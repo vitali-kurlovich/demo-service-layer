@@ -1,0 +1,17 @@
+@startuml
+title FetchError
+
+struct FetchErrorDescription {
+    + code: Int?
+    + description: String
+}
+
+enum FetchError {
+    requestError(FetchErrorDescription)
+    + localizedDescription: String
+}
+
+FetchError --|> Error
+
+@enduml
+

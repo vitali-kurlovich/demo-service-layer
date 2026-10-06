@@ -1,0 +1,16 @@
+@startuml
+
+!include Data/Symbol.puml
+!include Error/FetchError.puml 
+
+title StocksService
+
+struct StockInstrument {
+     + symbol: Symbol
+}
+
+protocol StocksService {
+    +  stocks() async throws(FetchError) : Array<StockInstrument>
+}
+
+@enduml
