@@ -1,0 +1,21 @@
+name: MacOS
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: MacOS
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v6
+    - uses: SwiftyLab/setup-swift@latest
+
+    - name: Run tests
+      run: swift test 
+
+
