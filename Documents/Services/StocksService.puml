@@ -9,8 +9,12 @@ struct StockInstrument {
      + symbol: Symbol
 }
 
+StockInstrument *-- Symbol
+
 protocol StocksService {
     +  stocks() async throws(FetchError) : Array<StockInstrument>
 }
 
+StocksService *-- StockInstrument
+StocksService *-- FetchError
 @enduml

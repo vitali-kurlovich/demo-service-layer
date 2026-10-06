@@ -13,5 +13,9 @@ protocol CryptoPairsService {
     + cryptoPairs() async throws(FetchError) : Array<CryptoPair>
 }
 
+CryptoPair *-- Symbol
+CryptoPairsService *-- CryptoPair
+CryptoPairsService *-- FetchError
+
 @enduml
 

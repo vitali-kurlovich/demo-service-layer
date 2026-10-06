@@ -13,4 +13,6 @@ protocol ConnectivityService {
     + connectivity: Stream<ConnectivityState>
 }
 
+ConnectivityService *-- ConnectivityState
+
 @end

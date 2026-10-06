@@ -12,6 +12,7 @@ enum FetchError {
 }
 
 FetchError --|> Error
+FetchError *-- FetchErrorDescription
 
 @enduml
 

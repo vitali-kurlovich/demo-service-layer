@@ -10,6 +10,7 @@ struct Symbol {
 Symbol <|-- Hashable
 Symbol <|-- Identifiable
 Symbol <|-- Comparable
+Symbol <|-- Codable
 
 @end
 

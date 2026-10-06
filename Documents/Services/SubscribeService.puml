@@ -6,7 +6,5 @@ protocol SubscribeService {
     + unsubsribe(Set<String>)
 }
 
-
-
 @enduml
 

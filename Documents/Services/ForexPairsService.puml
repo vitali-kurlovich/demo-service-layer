@@ -13,4 +13,8 @@ protocol ForexPairsService {
     + forexPairs() async throws(FetchError) : Array<ForexPair>
 }
 
+ForexPair *-- Symbol
+ForexPairsService *-- ForexPair
+ForexPairsService *-- FetchError
+
 @enduml
