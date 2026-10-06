@@ -2,7 +2,7 @@
 //  Created by Kurlovich Vitali on 10/3/26.
 //
 
-public nonisolated struct Symbol: Hashable, Identifiable, Sendable, CustomStringConvertible, Comparable {
+public nonisolated struct Symbol: Hashable, Identifiable, Sendable, CustomStringConvertible, Comparable, Codable {
     public let rawValue: String
 
     public init(_ rawValue: String) {

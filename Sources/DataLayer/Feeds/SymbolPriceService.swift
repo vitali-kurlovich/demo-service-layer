@@ -5,11 +5,11 @@
 import Foundation
 
 public nonisolated struct SymbolPrice: Equatable, Codable, Sendable {
-    public var symbol: String
+    public var symbol: Symbol
     public var timestamp: Date
     public var price: Decimal
 
-    public init(symbol: String, timestamp: Date, price: Decimal) {
+    public init(symbol: Symbol, timestamp: Date, price: Decimal) {
         self.symbol = symbol
         self.timestamp = timestamp
         self.price = price
@@ -18,13 +18,13 @@ public nonisolated struct SymbolPrice: Equatable, Codable, Sendable {
 
 extension SymbolPrice: Identifiable {
     public nonisolated var id: String {
-        symbol
+        symbol.id
     }
 }
 
 extension SymbolPrice: CustomStringConvertible {
     public var description: String {
-        "{ symbol:\(symbol), timestamp:\(timestamp), price:\(price) }"
+        "{ symbol:\(symbol.rawValue), timestamp:\(timestamp), price:\(price) }"
     }
 }
 
