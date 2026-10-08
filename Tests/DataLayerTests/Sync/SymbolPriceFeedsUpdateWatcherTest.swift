@@ -30,7 +30,7 @@ extension SymbolPriceFeedsUpdateWatcherTest {
             cacheReader: cache
         )
 
-        let updates = await watcher.watch(symbol: "ABC", service)
+        let updates = watcher.watch(symbol: "ABC", service)
 
         let result = await Array(updates)
 
@@ -73,7 +73,7 @@ extension SymbolPriceFeedsUpdateWatcherTest {
             cacheReader: cache
         )
 
-        let updates = await watcher.watch(symbol: "ABC", service)
+        let updates = watcher.watch(symbol: "ABC", service)
 
         let result = await Array(updates)
 

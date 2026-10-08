@@ -2,14 +2,13 @@
 //  Created by Kurlovich Vitali on 10/8/26.
 //
 
-public actor SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>
+public nonisolated struct SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>: Sendable
     where Reader.Key == Symbol, Reader.Value == SymbolPrice
 
 {
     public typealias Updates = CachableItem<FeedsUpdate>
 
     private let cacheReader: Reader
-    private var storage: [Symbol: FeedsUpdate] = [:]
 
     public init(
         cacheReader: Reader
@@ -17,21 +16,21 @@ public actor SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>
         self.cacheReader = cacheReader
     }
 
-    public func watch<S: AsyncSequence>(symbol: Symbol, prices: S) -> AsyncStream<Updates> where S.Element == SymbolPrice, S.Failure == Never {
+    public func watch<S: AsyncSequence & Sendable>(symbol: Symbol, prices: S) -> AsyncStream<Updates> where S.Element == SymbolPrice, S.Failure == Never {
         return AsyncStream<Updates>(
             bufferingPolicy: .bufferingNewest(0)
         ) { continuation in
             let task = Task {
                 do {
                     let update: Updates
+                    var lastPrice: SymbolPrice?
 
-                    if let lastPrice = try await cacheReader.readCachedValue(by: symbol) {
-                        let feed = FeedsUpdate(lastPrice)
-                        storage[feed.symbol] = feed
+                    if let cachedPrice = try await cacheReader.readCachedValue(by: symbol) {
+                        lastPrice = cachedPrice
+                        let feed = FeedsUpdate(cachedPrice)
                         update = Updates.cached(feed)
                     } else {
                         let feed = FeedsUpdate(symbol: symbol)
-                        storage[feed.symbol] = feed
                         update = Updates.cached(feed)
                     }
                     continuation.yield(update)
@@ -39,14 +38,13 @@ public actor SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>
                     for await price in prices {
                         guard price.symbol == symbol else { continue }
 
-                        let lastPrice = storage[price.symbol]
-
                         let resolver = PriceChangeResolver()
                         let change = resolver
                             .resolve(old: lastPrice?.price, new: price.price)
 
+                        lastPrice = price
+
                         let feed = FeedsUpdate(price, changes: change)
-                        storage[price.symbol] = feed
 
                         let update = Updates.original(feed)
                         continuation.yield(update)
@@ -67,7 +65,7 @@ public actor SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>
 }
 
 public extension SymbolPriceFeedsUpdateWatcher {
-    func watch<PriceService: SymbolPriceService>(symbol: Symbol, _ service: PriceService) -> AsyncStream<Updates> {
+    nonisolated func watch<PriceService: SymbolPriceService>(symbol: Symbol, _ service: PriceService) -> AsyncStream<Updates> where PriceService.SymbolPriceStream: Sendable {
         watch(symbol: symbol, prices: service.prices)
     }
 }
