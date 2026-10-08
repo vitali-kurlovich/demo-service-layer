@@ -29,7 +29,5 @@ extension SymbolPrice: CustomStringConvertible {
 }
 
 public nonisolated protocol SymbolPriceService: Sendable {
-    associatedtype SymbolPriceStream: AsyncSequence<SymbolPrice, Never>
-
-    var prices: SymbolPriceStream { get }
+    var prices: any AsyncSequence<SymbolPrice, Never> { get }
 }
