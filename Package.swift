@@ -14,7 +14,7 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "demo-service-layer",
+            name: "DataLayer",
             targets: ["DataLayer"]
         ),
     ],
