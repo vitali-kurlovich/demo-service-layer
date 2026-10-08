@@ -4,10 +4,10 @@
 
 public nonisolated struct SymbolPriceFeedsUpdateWatcher<
     Reader: CacheReader & Sendable,
-    PriceStream: AsyncSequence
+    PriceStream: AsyncSequence & Sendable
 >: Sendable
-where Reader.Key == Symbol, Reader.Value == SymbolPrice, PriceStream: Sendable,
-      PriceStream.Element == Reader.Value, PriceStream.Failure == Never
+    where Reader.Key == Symbol, Reader.Value == SymbolPrice,
+    PriceStream.Element == Reader.Value, PriceStream.Failure == Never
 {
     public typealias Updates = CachableItem<FeedsUpdate>
 
@@ -17,7 +17,7 @@ where Reader.Key == Symbol, Reader.Value == SymbolPrice, PriceStream: Sendable,
     public init(
         _ cacheReader: Reader,
         _ priceStream: PriceStream
-    )  {
+    ) {
         self.cacheReader = cacheReader
         self.priceStream = priceStream
     }
