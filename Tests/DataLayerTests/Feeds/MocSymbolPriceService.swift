@@ -12,7 +12,24 @@ struct MocSymbolPriceService: SymbolPriceService {
         self.storage = storage
     }
 
-    var prices: any AsyncSequence<SymbolPrice, Never> {
-        storage.async
+    var prices: AsyncStream<SymbolPrice> {
+        AsyncStream<SymbolPrice>(
+            bufferingPolicy: .bufferingNewest(1)
+        ) { continuation in
+            let task = Task {
+
+                for price in storage {
+                    try? await Task.sleep(for: .milliseconds(300))
+                    continuation.yield(price)
+                }
+                continuation.finish()
+            }
+
+            continuation.onTermination = { _ in
+                task.cancel()
+            }
+        }
+
+        // storage.async
     }
 }
