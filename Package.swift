@@ -39,12 +39,3 @@ let package = Package(
     ],
     swiftLanguageModes: [.v6]
 )
-
-/*
-
- dependencies: [
-     .package(url: "https://github.com/apple/swift-log", from: "1.15.1"),
-     .package(url: "https://github.com/vitali-kurlovich/swift-io-stream", from: "0.1.5"),
-     .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.1.0"),
- ],
- */
