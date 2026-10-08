@@ -24,11 +24,11 @@ extension SymbolPrice: Identifiable {
 
 extension SymbolPrice: CustomStringConvertible {
     public var description: String {
-        "{ symbol:\(symbol.rawValue), timestamp:\(timestamp), price:\(price) }"
+        "{symbol:\(symbol.rawValue), timestamp:\(timestamp), price:\(price)}"
     }
 }
 
-public nonisolated protocol SymbolPriceService: SubscribeService, Sendable where Key == String {
+public nonisolated protocol SymbolPriceService: Sendable {
     associatedtype SymbolPriceStream: AsyncSequence<SymbolPrice, Never>
 
     var prices: SymbolPriceStream { get }

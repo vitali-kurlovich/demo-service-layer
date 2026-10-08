@@ -2,7 +2,7 @@
 //  Created by Kurlovich Vitali on 9/29/26.
 //
 
-public nonisolated protocol SubscribeService: Sendable {
+public nonisolated protocol SubscribeService<Key>: Sendable {
     associatedtype Key: Hashable & Sendable
 
     func subsribe(_ keys: Set<Key>)
