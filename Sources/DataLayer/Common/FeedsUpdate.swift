@@ -21,7 +21,7 @@ public nonisolated struct FeedsUpdate: Hashable, Sendable {
         symbol: Symbol,
         price: Decimal? = nil,
         timestamp: Date? = nil,
-        changes: PriceChange = .neutral
+        changes: PriceChange = .unknown
     ) {
         self.symbol = symbol
         self.price = price
@@ -33,5 +33,16 @@ public nonisolated struct FeedsUpdate: Hashable, Sendable {
 extension FeedsUpdate: Identifiable {
     public var id: Symbol {
         symbol
+    }
+}
+
+public extension FeedsUpdate {
+    init(_ symbolPrice: SymbolPrice, changes: PriceChange = .unknown) {
+        self.init(
+            symbol: symbolPrice.symbol,
+            price: symbolPrice.price,
+            timestamp: symbolPrice.timestamp,
+            changes: changes
+        )
     }
 }
