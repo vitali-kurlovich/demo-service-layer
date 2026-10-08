@@ -9,3 +9,9 @@ public protocol CacheWriter<Key, Value, Failed> {
 
     func writeToCache(by key: Key, value: Value?) async throws(Failed)
 }
+
+public extension CacheWriter {
+    func removeFromCache(by key: Key) async throws(Failed) {
+        try await writeToCache(by: key, value: nil)
+    }
+}
