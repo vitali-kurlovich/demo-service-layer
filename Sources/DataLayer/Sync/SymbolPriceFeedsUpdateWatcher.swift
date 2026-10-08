@@ -2,21 +2,27 @@
 //  Created by Kurlovich Vitali on 10/8/26.
 //
 
-public nonisolated struct SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Sendable>: Sendable
-    where Reader.Key == Symbol, Reader.Value == SymbolPrice
-
+public nonisolated struct SymbolPriceFeedsUpdateWatcher<
+    Reader: CacheReader & Sendable,
+    PriceStream: AsyncSequence
+>: Sendable
+where Reader.Key == Symbol, Reader.Value == SymbolPrice, PriceStream: Sendable,
+      PriceStream.Element == Reader.Value, PriceStream.Failure == Never
 {
     public typealias Updates = CachableItem<FeedsUpdate>
 
     private let cacheReader: Reader
+    private let priceStream: PriceStream
 
     public init(
-        cacheReader: Reader
-    ) {
+        _ cacheReader: Reader,
+        _ priceStream: PriceStream
+    )  {
         self.cacheReader = cacheReader
+        self.priceStream = priceStream
     }
 
-    public func watch<S: AsyncSequence & Sendable>(symbol: Symbol, prices: S) -> AsyncStream<Updates> where S.Element == SymbolPrice, S.Failure == Never {
+    public func watch(symbol: Symbol) -> AsyncStream<Updates> {
         return AsyncStream<Updates>(
             bufferingPolicy: .bufferingNewest(0)
         ) { continuation in
@@ -35,7 +41,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Se
                     }
                     continuation.yield(update)
 
-                    for await price in prices {
+                    for await price in priceStream {
                         guard price.symbol == symbol else { continue }
 
                         let resolver = PriceChangeResolver()
@@ -65,7 +71,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<Reader: CacheReader & Se
 }
 
 public extension SymbolPriceFeedsUpdateWatcher {
-    nonisolated func watch<PriceService: SymbolPriceService>(symbol: Symbol, _ service: PriceService) -> AsyncStream<Updates> where PriceService.SymbolPriceStream: Sendable {
-        watch(symbol: symbol, prices: service.prices)
+    nonisolated init<Service: SymbolPriceService>(_ cacheReader: Reader, _ service: Service) where Service.SymbolPriceStream == PriceStream {
+        self.init(cacheReader, service.prices)
     }
 }

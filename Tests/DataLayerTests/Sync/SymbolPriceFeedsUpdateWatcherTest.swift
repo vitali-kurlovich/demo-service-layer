@@ -26,11 +26,9 @@ extension SymbolPriceFeedsUpdateWatcherTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let watcher = SymbolPriceFeedsUpdateWatcher(
-            cacheReader: cache
-        )
+        let watcher = SymbolPriceFeedsUpdateWatcher(cache, service)
 
-        let updates = watcher.watch(symbol: "ABC", service)
+        let updates = watcher.watch(symbol: "ABC")
 
         let result = await Array(updates)
 
@@ -69,11 +67,9 @@ extension SymbolPriceFeedsUpdateWatcherTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let watcher = SymbolPriceFeedsUpdateWatcher(
-            cacheReader: cache
-        )
+        let watcher = SymbolPriceFeedsUpdateWatcher(cache, service)
 
-        let updates = watcher.watch(symbol: "ABC", service)
+        let updates = watcher.watch(symbol: "ABC")
 
         let result = await Array(updates)
 
