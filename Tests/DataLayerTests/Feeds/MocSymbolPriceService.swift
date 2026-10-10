@@ -14,12 +14,13 @@ struct MocSymbolPriceService: SymbolPriceService {
 
     var prices: AsyncStream<SymbolPrice> {
         AsyncStream<SymbolPrice>(
-            bufferingPolicy: .bufferingNewest(1)
+            bufferingPolicy: .bufferingNewest(0)
         ) { continuation in
             let task = Task {
 
                 for price in storage {
-                    try? await Task.sleep(for: .milliseconds(300))
+                    try? await Task.sleep(for: .milliseconds(1))
+
                     continuation.yield(price)
                 }
                 continuation.finish()

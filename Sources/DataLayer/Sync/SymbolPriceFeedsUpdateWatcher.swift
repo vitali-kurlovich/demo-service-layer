@@ -2,24 +2,28 @@
 //  Created by Kurlovich Vitali on 10/8/26.
 //
 
+import AsyncAlgorithms
+import CoreLayer
+
 public nonisolated struct SymbolPriceFeedsUpdateWatcher<
-    Reader: CacheReader & Sendable,
+    Reader: KeyValueStorageReader & Sendable,
     PriceStream: AsyncSequence & Sendable
 >: Sendable
-    where Reader.Key == Symbol, Reader.Value == SymbolPrice,
-    PriceStream.Element == Reader.Value, PriceStream.Failure == Never
+    where Reader.Key == Symbol, Reader.Value == FeedsUpdate,
+    PriceStream.Element == SymbolPrice, PriceStream.Failure == Never,
+    PriceStream.AsyncIterator: SendableMetatype
 {
     public typealias Updates = CachableItem<FeedsUpdate>
 
     private let cacheReader: Reader
-    private let priceStream: PriceStream
+    private let priceStream: any AsyncSequence<SymbolPrice, Never> & Sendable
 
     public init(
         _ cacheReader: Reader,
         _ priceStream: PriceStream
     ) {
         self.cacheReader = cacheReader
-        self.priceStream = priceStream
+        self.priceStream = priceStream.share()
     }
 
     public func watch(symbol: Symbol) -> AsyncStream<Updates> {
@@ -27,40 +31,28 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<
             bufferingPolicy: .bufferingNewest(0)
         ) { continuation in
             let task = Task {
+                var lastFeed: FeedsUpdate
                 do {
-                    let update: Updates
-                    var lastPrice: SymbolPrice?
-
-                    if let cachedPrice = try await cacheReader.readCachedValue(by: symbol) {
-                        lastPrice = cachedPrice
-                        let feed = FeedsUpdate(cachedPrice)
-                        update = Updates.cached(feed)
-                    } else {
-                        let feed = FeedsUpdate(symbol: symbol)
-                        update = Updates.cached(feed)
-                    }
-                    continuation.yield(update)
-
-                    for await price in priceStream {
-                        guard price.symbol == symbol else { continue }
-
-                        let resolver = PriceChangeResolver()
-                        let change = resolver
-                            .resolve(old: lastPrice?.price, new: price.price)
-
-                        lastPrice = price
-
-                        let feed = FeedsUpdate(price, changes: change)
-
-                        let update = Updates.original(feed)
-                        continuation.yield(update)
-                    }
-
-                    continuation.finish()
-
+                    lastFeed = try await cacheReader.readValue(by: symbol) ?? FeedsUpdate(symbol: symbol)
                 } catch {
+                    lastFeed = FeedsUpdate(symbol: symbol)
                     // TODO: Logging errors
                 }
+                continuation.yield(.cached(lastFeed))
+
+                for await price in priceStream {
+                    guard price.symbol == symbol else { continue }
+
+                    let resolver = PriceChangeResolver()
+                    let change = resolver
+                        .resolve(old: lastFeed.price, new: price.price)
+
+                    lastFeed = FeedsUpdate(price, changes: change)
+
+                    continuation.yield(.original(lastFeed))
+                }
+
+                continuation.finish()
             }
 
             continuation.onTermination = { _ in

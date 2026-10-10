@@ -19,6 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/vitali-kurlovich/demo-core-layer", from: "0.0.1"),
         .package(url: "https://github.com/apple/swift-log", from: "1.15.1"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
@@ -29,14 +30,18 @@ let package = Package(
         .target(
             name: "DataLayer",
             dependencies: [
+                .product(name: "CoreLayer", package: "demo-core-layer"),
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             ]
 
         ),
         .testTarget(
             name: "DataLayerTests",
-            dependencies: ["DataLayer",
-                           .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")]
+            dependencies: [
+                "DataLayer",
+                .product(name: "CoreLayer", package: "demo-core-layer"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ]
 
         ),
     ],

@@ -10,7 +10,7 @@ import Testing
 struct SymbolPriceCacheUpdaterTest {
     @Test
     func updateCacheNoPrices() async {
-        let writer = MocCache()
+        let writer = MocKeyValue<Symbol, SymbolPrice>()
 
         #expect(await writer.storage.isEmpty == true)
 
@@ -26,7 +26,7 @@ struct SymbolPriceCacheUpdaterTest {
 
     @Test
     func updateCacheOnePrice() async {
-        let writer = MocCache()
+        let writer = MocKeyValue<Symbol, SymbolPrice>()
 
         #expect(await writer.storage.isEmpty == true)
 
@@ -45,7 +45,7 @@ struct SymbolPriceCacheUpdaterTest {
 
     @Test
     func updateCacheTwoPricesWithDifferentSymbols() async {
-        let writer = MocCache()
+        let writer = MocKeyValue<Symbol, SymbolPrice>()
 
         #expect(await writer.storage.isEmpty == true)
 
@@ -65,7 +65,7 @@ struct SymbolPriceCacheUpdaterTest {
 
     @Test
     func updateCacheTwoPricesWithSameSymbols() async {
-        let writer = MocCache()
+        let writer = MocKeyValue<Symbol, SymbolPrice>()
 
         #expect(await writer.storage.isEmpty == true)
 
