@@ -8,3 +8,13 @@ public nonisolated protocol SubscribeService<Key>: Sendable {
     func subsribe(_ keys: Set<Key>)
     func unsubsribe(_ keys: Set<Key>)
 }
+
+public extension SubscribeService {
+    nonisolated func subsribe(_ key: Key) {
+        subsribe([key])
+    }
+
+    nonisolated func unsubsribe(_ key: Key) {
+        unsubsribe([key])
+    }
+}
