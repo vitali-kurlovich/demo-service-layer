@@ -28,7 +28,9 @@ extension SymbolPrice: CustomStringConvertible {
     }
 }
 
-public nonisolated protocol SymbolPriceService: Sendable {
+public nonisolated protocol SymbolPriceService: Sendable
+    where SymbolPriceStream: Sendable, SymbolPriceStream.AsyncIterator: SendableMetatype
+{
     associatedtype SymbolPriceStream: AsyncSequence<SymbolPrice, Never>
 
     var prices: SymbolPriceStream { get }
