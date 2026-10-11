@@ -35,6 +35,10 @@ final class MocSubscribe<Key: Hashable & Sendable>: @unchecked Sendable, Subscri
 }
 
 extension MocSubscribe {
+    func isSubscribed(_ key: Key) -> Bool {
+        count(for: key) > 0
+    }
+
     func count(for key: Key) -> Int {
         return subsribedCount(for: key) - unsubsribedCount(for: key)
     }
@@ -70,6 +74,9 @@ struct MocSubscribeTest {
         #expect(subscriber.count(for: "A") == 0)
         #expect(subscriber.count(for: "B") == 0)
 
+        #expect(subscriber.isSubscribed("A") == false)
+        #expect(subscriber.isSubscribed("B") == false)
+
         subscriber.subsribe(["A", "B"])
 
         #expect(subscriber.subsribedCount(for: "A") == 1)
@@ -79,6 +86,9 @@ struct MocSubscribeTest {
 
         #expect(subscriber.count(for: "A") == 1)
         #expect(subscriber.count(for: "B") == 1)
+
+        #expect(subscriber.isSubscribed("A") == true)
+        #expect(subscriber.isSubscribed("B") == true)
 
         subscriber.subsribe(["A", "B"])
 
@@ -90,6 +100,9 @@ struct MocSubscribeTest {
         #expect(subscriber.count(for: "A") == 2)
         #expect(subscriber.count(for: "B") == 2)
 
+        #expect(subscriber.isSubscribed("A") == true)
+        #expect(subscriber.isSubscribed("B") == true)
+
         subscriber.subsribe("A")
 
         #expect(subscriber.subsribedCount(for: "A") == 3)
@@ -99,6 +112,9 @@ struct MocSubscribeTest {
 
         #expect(subscriber.count(for: "A") == 3)
         #expect(subscriber.count(for: "B") == 2)
+
+        #expect(subscriber.isSubscribed("A") == true)
+        #expect(subscriber.isSubscribed("B") == true)
 
         subscriber.unsubsribe(["A", "B"])
 
@@ -110,6 +126,9 @@ struct MocSubscribeTest {
         #expect(subscriber.count(for: "A") == 2)
         #expect(subscriber.count(for: "B") == 1)
 
+        #expect(subscriber.isSubscribed("A") == true)
+        #expect(subscriber.isSubscribed("B") == true)
+
         subscriber.unsubsribe(["A", "B"])
 
         #expect(subscriber.subsribedCount(for: "A") == 3)
@@ -119,6 +138,9 @@ struct MocSubscribeTest {
 
         #expect(subscriber.count(for: "A") == 1)
         #expect(subscriber.count(for: "B") == 0)
+
+        #expect(subscriber.isSubscribed("A") == true)
+        #expect(subscriber.isSubscribed("B") == false)
 
         subscriber.unsubsribe("A")
         subscriber.unsubsribe("B")
@@ -130,5 +152,8 @@ struct MocSubscribeTest {
 
         #expect(subscriber.count(for: "A") == 0)
         #expect(subscriber.count(for: "B") == -1)
+
+        #expect(subscriber.isSubscribed("A") == false)
+        #expect(subscriber.isSubscribed("B") == false)
     }
 }
