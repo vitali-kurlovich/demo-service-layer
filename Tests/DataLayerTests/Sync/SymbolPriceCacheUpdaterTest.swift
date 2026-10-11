@@ -82,36 +82,22 @@ struct SymbolPriceCacheUpdaterTest {
         #expect(await writer.storage[prices[1].symbol] == prices[1])
     }
 
-    /*
-     @Test
-     func updateCacheWithSymbolPriceService() async {
-         let writer = MocCacheWriter()
+    @Test
+    func updateCacheWithSymbolPriceService() async {
+        let writer = MocKeyValue<Symbol, SymbolPrice>()
 
-         #expect(await writer.storage.isEmpty == true)
+        #expect(await writer.storage.isEmpty == true)
 
-         let date = Date.now
+        let date = Date.now
 
-         let prices = [SymbolPrice(symbol: "ABC", timestamp: date, price: Decimal(10))]
+        let prices = [SymbolPrice(symbol: "ABC", timestamp: date, price: Decimal(10))]
 
-         let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
 
-         await updater.watch(prices: prices.async)
+        await updater.watch(prices: prices.async)
 
-         #expect(await writer.storage.isEmpty == false)
+        #expect(await writer.storage.isEmpty == false)
 
-         #expect(await writer.storage["ABC"]?.price == Decimal(10))
-     }
-     */
-
-    // MocSymbolPriceService
+        #expect(await writer.storage["ABC"]?.price == Decimal(10))
+    }
 }
-
-/*
- let isoString = "2026-10-08T15:08:00Z"
-
- // One-liner parsing
- if let date = try! Date("2026-10-08T15:08:00Z", strategy: .iso8601) {
-     print(date) // 2026-10-08 15:08:00 +0000
- }
-
- */

@@ -13,13 +13,14 @@ struct SymbolPriceFeedsUpdateWatcherTest {}
 extension SymbolPriceFeedsUpdateWatcherTest {
     @Test
     func emptyCache() async {
-        let cache = MocKeyValue<Symbol, SymbolPrice>().map { price in
-            FeedsUpdate(
-                symbol: price.symbol,
-                price: price.price,
-                timestamp: price.timestamp
-            )
-        }
+        let cache = MocKeyValue<Symbol, SymbolPrice>()
+            .map { price in
+                FeedsUpdate(
+                    symbol: price.symbol,
+                    price: price.price,
+                    timestamp: price.timestamp
+                )
+            }
 
         let prices: [SymbolPrice] = [
             SymbolPrice(symbol: "ABC", timestamp: Date("2026-10-08T15:08:00Z"), price: Decimal(10)), // 0
