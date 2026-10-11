@@ -7,9 +7,10 @@ import DataLayer
 
 struct MocSymbolPriceService: SymbolPriceService {
     let storage: [SymbolPrice]
-
-    init(_ storage: [SymbolPrice]) {
+    let period: Duration
+    init(_ storage: [SymbolPrice], period: Duration = .milliseconds(1)) {
         self.storage = storage
+        self.period = period
     }
 
     var prices: AsyncStream<SymbolPrice> {
@@ -19,7 +20,7 @@ struct MocSymbolPriceService: SymbolPriceService {
             let task = Task {
 
                 for price in storage {
-                    try? await Task.sleep(for: .milliseconds(1))
+                    try? await Task.sleep(for: period)
 
                     continuation.yield(price)
                 }
