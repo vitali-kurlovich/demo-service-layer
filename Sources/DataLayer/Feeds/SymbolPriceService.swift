@@ -24,7 +24,7 @@ extension SymbolPrice: Identifiable {
 
 extension SymbolPrice: CustomStringConvertible {
     public var description: String {
-        "{symbol:\(symbol.rawValue), timestamp:\(timestamp), price:\(price)}"
+        "\(symbol),\(timestamp),\(price)}"
     }
 }
 
