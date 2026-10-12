@@ -60,7 +60,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<
 }
 
 public extension SymbolPriceFeedsUpdateWatcher {
-    nonisolated init<Service: SymbolPriceService>(_ cacheReader: Reader, _ service: Service) {
+    nonisolated init(_ cacheReader: Reader, _ service: any SymbolPriceService) {
         self.init(cacheReader, service.prices)
     }
 }
