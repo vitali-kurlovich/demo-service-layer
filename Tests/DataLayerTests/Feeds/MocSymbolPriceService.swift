@@ -2,13 +2,12 @@
 //  Created by Kurlovich Vitali on 10/8/26.
 //
 
-import AsyncAlgorithms
 import DataLayer
 
 struct MocSymbolPriceService: SymbolPriceService {
     let storage: [SymbolPrice]
     let period: Duration
-    init(_ storage: [SymbolPrice], period: Duration = .milliseconds(1)) {
+    init(_ storage: [SymbolPrice], period: Duration = .milliseconds(100)) {
         self.storage = storage
         self.period = period
     }

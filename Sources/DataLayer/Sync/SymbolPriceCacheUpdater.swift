@@ -4,26 +4,33 @@
 
 import CoreLayer
 
-public struct SymbolPriceCacheUpdater<Writer: KeyValueStorageWriter & Sendable> where Writer.Key == Symbol, Writer.Value == SymbolPrice {
-    private let cacheWriter: Writer
+public nonisolated struct SymbolPriceCacheUpdater<Writer: KeyValueStorageWriter & Sendable>
+    where
+    Writer.Key == Symbol, Writer.Value == SymbolPrice
+{
+    @usableFromInline
+    let updater: KeyValueStorageUpdater<Writer>
 
-    public init(cacheWriter: Writer) {
-        self.cacheWriter = cacheWriter
+    @inlinable
+    public init(_ cacheWriter: Writer, handleError: @Sendable @escaping (Writer.Failed) -> Void = { _ in }) {
+        updater = KeyValueStorageUpdater(cacheWriter, handleError: handleError) { value in
+            value.symbol
+        }
     }
 
-    public func watch(prices: any AsyncSequence<SymbolPrice, Never>) async {
-        for await price in prices {
-            do {
-                try await cacheWriter.write(by: price.symbol, value: price)
-            } catch {
-                // TODO: Error logging
-            }
-        }
+    @inlinable
+    public func watch<PriceStream: AsyncSequence & Sendable>(prices: PriceStream) async
+        where
+        PriceStream.Element == SymbolPrice, PriceStream.Failure == Never,
+        PriceStream.AsyncIterator: SendableMetatype
+    {
+        await updater.watch(prices)
     }
 }
 
 public extension SymbolPriceCacheUpdater {
-    func watch<PriceService: SymbolPriceService>(_ service: PriceService) async {
+    @inlinable
+    nonisolated func watch<PriceService: SymbolPriceService>(_ service: PriceService) async {
         await watch(prices: service.prices)
     }
 }

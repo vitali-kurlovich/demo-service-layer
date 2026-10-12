@@ -18,7 +18,7 @@ struct SymbolPriceCacheUpdaterTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(writer)
         await updater.watch(service)
 
         #expect(await writer.storage.isEmpty == true)
@@ -34,7 +34,7 @@ struct SymbolPriceCacheUpdaterTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(writer)
         await updater.watch(service)
 
         #expect(await writer.storage.isEmpty == false)
@@ -53,7 +53,7 @@ struct SymbolPriceCacheUpdaterTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(writer)
         await updater.watch(service)
 
         #expect(await writer.storage.isEmpty == false)
@@ -73,7 +73,7 @@ struct SymbolPriceCacheUpdaterTest {
 
         let service = MocSymbolPriceService(prices)
 
-        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(writer)
         await updater.watch(service)
 
         #expect(await writer.storage.isEmpty == false)
@@ -88,16 +88,37 @@ struct SymbolPriceCacheUpdaterTest {
 
         #expect(await writer.storage.isEmpty == true)
 
-        let date = Date.now
+        let prices = [SymbolPrice(symbol: "ABC", timestamp: Date("2026-10-08T15:08:00Z"), price: Decimal(10))]
 
-        let prices = [SymbolPrice(symbol: "ABC", timestamp: date, price: Decimal(10))]
-
-        let updater = SymbolPriceCacheUpdater(cacheWriter: writer)
+        let updater = SymbolPriceCacheUpdater(writer)
 
         await updater.watch(prices: prices.async)
 
         #expect(await writer.storage.isEmpty == false)
 
         #expect(await writer.storage["ABC"]?.price == Decimal(10))
+    }
+
+    @Test
+    func updateCacheWithWriteErrorSymbolPriceService() async {
+        let writer = MocThrowsKeyValue<Symbol, SymbolPrice>()
+
+        #expect(await writer.storage.isEmpty == true)
+
+        let prices = [SymbolPrice(symbol: "ABC", timestamp: Date("2026-10-08T15:08:00Z"), price: Decimal(10))]
+
+        await confirmation(
+            "handleError is called"
+        ) { confirm in
+            let updater = SymbolPriceCacheUpdater(
+                writer,
+                handleError: { error in
+                    #expect(error == .writeError)
+                    confirm()
+                }
+            )
+
+            await updater.watch(prices: prices.async)
+        }
     }
 }
