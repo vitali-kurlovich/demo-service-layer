@@ -1,4 +1,6 @@
 # demo-service-layer
+[![Linux](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/linux.yml/badge.svg)](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/linux.yml) [![MacOS](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/macos.yml/badge.svg)](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/macos.yml) [![Generate DocC](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/doc.yml/badge.svg)](https://github.com/vitali-kurlovich/demo-service-layer/actions/workflows/doc.yml)
+
 
 For more info, you can read:
 
