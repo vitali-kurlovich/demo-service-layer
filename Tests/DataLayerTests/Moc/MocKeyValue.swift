@@ -24,3 +24,29 @@ extension MocKeyValue: KeyValueStorageWriter<Key, Value, Never> {
         storage[key] = value
     }
 }
+
+enum MocThrowsKeyValueError: Error {
+    case readError
+    case writeError
+}
+
+actor MocThrowsKeyValue<Key: Hashable & Sendable, Value: Sendable> {
+    var storage: [Key: Value]
+    init(
+        storage: [Key: Value] = [:]
+    ) {
+        self.storage = storage
+    }
+}
+
+extension MocThrowsKeyValue: KeyValueStorageReader<Key, Value, MocThrowsKeyValueError> {
+    func readValue(by _: Key) async throws(MocThrowsKeyValueError) -> Value? {
+        throw MocThrowsKeyValueError.readError
+    }
+}
+
+extension MocThrowsKeyValue: KeyValueStorageWriter<Key, Value, MocThrowsKeyValueError> {
+    func write(by _: Key, value _: Value?) async throws(MocThrowsKeyValueError) {
+        throw MocThrowsKeyValueError.writeError
+    }
+}
