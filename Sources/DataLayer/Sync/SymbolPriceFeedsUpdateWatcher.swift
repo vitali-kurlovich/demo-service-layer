@@ -6,12 +6,9 @@ import AsyncAlgorithms
 import CoreLayer
 
 public nonisolated struct SymbolPriceFeedsUpdateWatcher<
-    Reader: KeyValueStorageReader & Sendable,
-    PriceStream: AsyncSequence & Sendable
+    Reader: KeyValueStorageReader & Sendable
 >: Sendable
-    where Reader.Key == Symbol, Reader.Value == FeedsUpdate,
-    PriceStream.Element == SymbolPrice, PriceStream.Failure == Never,
-    PriceStream.AsyncIterator: SendableMetatype
+    where Reader.Key == Symbol, Reader.Value == FeedsUpdate
 {
     public typealias Updates = CachableItem<FeedsUpdate>
 
@@ -20,7 +17,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<
 
     public init(
         _ cacheReader: Reader,
-        _ priceStream: PriceStream
+        _ priceStream: AsyncStream<SymbolPrice>
     ) {
         self.cacheReader = cacheReader
         self.priceStream = priceStream.share()
@@ -63,7 +60,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<
 }
 
 public extension SymbolPriceFeedsUpdateWatcher {
-    nonisolated init<Service: SymbolPriceService>(_ cacheReader: Reader, _ service: Service) where Service.SymbolPriceStream == PriceStream {
+    nonisolated init<Service: SymbolPriceService>(_ cacheReader: Reader, _ service: Service) {
         self.init(cacheReader, service.prices)
     }
 }

@@ -28,7 +28,5 @@ extension ConnectivityState: CustomStringConvertible {
 }
 
 public nonisolated protocol ConnectivityService: Sendable {
-    associatedtype Connectivity: AsyncSequence<ConnectivityState, Never>
-
-    var connectivity: Connectivity { get }
+    var connectivity: AsyncStream<ConnectivityState> { get }
 }

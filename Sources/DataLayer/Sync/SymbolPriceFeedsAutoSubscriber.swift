@@ -6,14 +6,12 @@ import CoreLayer
 
 public nonisolated struct SymbolPriceFeedsAutoSubscriber<
     Reader: KeyValueStorageReader & Sendable,
-    PriceStream: AsyncSequence & Sendable,
     Subscriber: SubscribeService & Sendable
 >: Sendable
     where Reader.Key == Symbol, Reader.Value == FeedsUpdate,
-    PriceStream.Element == SymbolPrice, PriceStream.Failure == Never, PriceStream.AsyncIterator: SendableMetatype,
     Subscriber.Key == Symbol
 {
-    public typealias UpdateWatcher = SymbolPriceFeedsUpdateWatcher<Reader, PriceStream>
+    public typealias UpdateWatcher = SymbolPriceFeedsUpdateWatcher<Reader>
     public typealias Updates = UpdateWatcher.Updates
 
     let updatesWatcher: UpdateWatcher
@@ -49,7 +47,7 @@ public nonisolated struct SymbolPriceFeedsAutoSubscriber<
 public extension SymbolPriceFeedsAutoSubscriber {
     init(subscriber: Subscriber,
          _ cache: Reader,
-         _ stream: PriceStream)
+         _ stream: AsyncStream<SymbolPrice>)
     {
         let updateWatcher = UpdateWatcher(cache, stream)
 
@@ -60,17 +58,7 @@ public extension SymbolPriceFeedsAutoSubscriber {
         subscriber: Subscriber,
         service: Service,
         _ cache: Reader
-    ) where Service.SymbolPriceStream == PriceStream {
+    ) {
         self.init(subscriber: subscriber, cache, service.prices)
-        //  let updateWatcher = UpdateWatcher(cache, service.prices)
-
-        //  self.init(subscriber: subscriber, updateWatcher)
     }
 }
-
-/*
-
- func watch<PriceService: SymbolPriceService>(_ service: PriceService) async {
-     await watch(prices: service.prices)
- }
- */
