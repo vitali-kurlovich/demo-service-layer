@@ -39,7 +39,7 @@ public nonisolated struct SymbolPriceFeedsUpdateWatcher<
 
                 for await price in priceStream {
                     guard price.symbol == symbol else { continue }
-                    guard lastFeed.timestamp != price.timestamp else { continue }
+                    guard lastFeed.timestamp != price.timestamp || lastFeed.price != price.price else { continue }
 
                     let resolver = PriceChangeResolver()
                     let change = resolver
