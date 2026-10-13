@@ -92,7 +92,9 @@ struct SymbolPriceCacheUpdaterTest {
 
         let updater = SymbolPriceCacheUpdater(writer)
 
-        await updater.watch(prices: prices.async)
+        let service = MocSymbolPriceService(prices)
+
+        await updater.watch(prices: service.prices)
 
         #expect(await writer.storage.isEmpty == false)
 
@@ -107,6 +109,8 @@ struct SymbolPriceCacheUpdaterTest {
 
         let prices = [SymbolPrice(symbol: "ABC", timestamp: Date("2026-10-08T15:08:00Z"), price: Decimal(10))]
 
+        let service = MocSymbolPriceService(prices)
+
         await confirmation(
             "handleError is called"
         ) { confirm in
@@ -118,7 +122,7 @@ struct SymbolPriceCacheUpdaterTest {
                 }
             )
 
-            await updater.watch(prices: prices.async)
+            await updater.watch(service)
         }
     }
 }

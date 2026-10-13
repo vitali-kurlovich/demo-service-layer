@@ -19,18 +19,14 @@ public nonisolated struct SymbolPriceCacheUpdater<Writer: KeyValueStorageWriter 
     }
 
     @inlinable
-    public func watch<PriceStream: AsyncSequence & Sendable>(prices: PriceStream) async
-        where
-        PriceStream.Element == SymbolPrice, PriceStream.Failure == Never,
-        PriceStream.AsyncIterator: SendableMetatype
-    {
+    public func watch(prices: AsyncStream<SymbolPrice>) async {
         await updater.watch(prices)
     }
 }
 
 public extension SymbolPriceCacheUpdater {
     @inlinable
-    nonisolated func watch<PriceService: SymbolPriceService>(_ service: PriceService) async {
+    nonisolated func watch(_ service: any SymbolPriceService) async {
         await watch(prices: service.prices)
     }
 }
