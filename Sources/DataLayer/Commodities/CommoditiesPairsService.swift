@@ -10,6 +10,4 @@ public nonisolated struct CommoditiesPair: Equatable, Sendable {
     }
 }
 
-public nonisolated protocol CommoditiesPairsService: Sendable {
-    func commodities() async throws(FetchError) -> [CommoditiesPair]
-}
+public nonisolated protocol CommoditiesPairsService: AssetsService, AssetsPagesService where Asset == CommoditiesPair {}

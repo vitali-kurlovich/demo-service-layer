@@ -15,10 +15,13 @@ public nonisolated struct FetchErrorDescription: Equatable, Sendable {
 }
 
 public nonisolated enum FetchError: Error, Equatable, Sendable {
+    case notImplemented
     case requestError(FetchErrorDescription)
 
     public var localizedDescription: String {
         switch self {
+        case .notImplemented:
+            return "Not Implemented"
         case let .requestError(details):
             return details.description
         }

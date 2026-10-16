@@ -9,6 +9,4 @@ public nonisolated struct CryptoPair: Equatable, Sendable {
     }
 }
 
-public nonisolated protocol CryptoPairsService: Sendable {
-    func cryptoPairs() async throws(FetchError) -> [CryptoPair]
-}
+public nonisolated protocol CryptoPairsService: AssetsService, AssetsPagesService where Asset == CryptoPair {}

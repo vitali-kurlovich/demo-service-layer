@@ -10,6 +10,4 @@ public nonisolated struct StockInstrument: Equatable, Sendable {
     }
 }
 
-public nonisolated protocol StocksService: Sendable {
-    func stocks() async throws(FetchError) -> [StockInstrument]
-}
+public nonisolated protocol StocksService: AssetsService, AssetsPagesService where Asset == StockInstrument {}

@@ -9,6 +9,4 @@ public nonisolated struct ForexPair: Equatable, Sendable {
     }
 }
 
-public nonisolated protocol ForexPairsService: Sendable {
-    func forexPairs() async throws(FetchError) -> [ForexPair]
-}
+public nonisolated protocol ForexPairsService: AssetsService, AssetsPagesService where Asset == ForexPair {}

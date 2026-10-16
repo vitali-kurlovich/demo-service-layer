@@ -32,3 +32,9 @@ public nonisolated protocol AssetsPagesService: Sendable {
     associatedtype Asset
     func fetch(_ page: FetchPage) async throws(FetchError) -> AssetsPage<Asset>
 }
+
+public extension AssetsPagesService {
+    func fetch(_: FetchPage) async throws(FetchError) -> AssetsPage<Asset> {
+        throw .notImplemented
+    }
+}
