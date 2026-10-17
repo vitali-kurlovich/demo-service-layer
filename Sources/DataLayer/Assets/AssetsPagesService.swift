@@ -28,7 +28,7 @@ extension AssetsPage: Sendable where Asset: Sendable {}
 
 extension AssetsPage: Equatable where Asset: Equatable {}
 
-public nonisolated protocol AssetsPagesService: Sendable {
+public nonisolated protocol AssetsPagesService<Asset>: Sendable {
     associatedtype Asset
     func fetch(_ page: FetchPage) async throws(FetchError) -> AssetsPage<Asset>
 }

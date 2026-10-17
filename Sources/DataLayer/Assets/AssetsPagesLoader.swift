@@ -2,13 +2,11 @@
 //  Created by Kurlovich Vitali on 10/16/26.
 //
 
-public actor AssetsPagesLoader<Service: AssetsPagesService & Sendable> {
-    public typealias Asset = Service.Asset
-
-    let service: Service
+public actor AssetsPagesLoader<Asset: Sendable> {
+    let service: any AssetsPagesService<Asset>
     private var collector: PagesCollector<Asset>
 
-    public init(service: Service, pageSize: Int = 50) {
+    public init(service: any AssetsPagesService<Asset>, pageSize: Int = 50) {
         self.service = service
         collector = PagesCollector<Asset>(pageSize: pageSize)
     }
