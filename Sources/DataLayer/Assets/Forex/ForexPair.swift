@@ -8,5 +8,3 @@ public nonisolated struct ForexPair: Equatable, Sendable {
         self.symbol = symbol
     }
 }
-
-public nonisolated protocol ForexPairsService: AssetsService, AssetsPagesService where Asset == ForexPair {}

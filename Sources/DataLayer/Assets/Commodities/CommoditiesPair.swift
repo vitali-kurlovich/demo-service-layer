@@ -9,5 +9,3 @@ public nonisolated struct CommoditiesPair: Equatable, Sendable {
         self.symbol = symbol
     }
 }
-
-public nonisolated protocol CommoditiesPairsService: AssetsService, AssetsPagesService where Asset == CommoditiesPair {}

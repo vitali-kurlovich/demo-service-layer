@@ -9,5 +9,3 @@ public nonisolated struct StockInstrument: Equatable, Sendable {
         self.symbol = symbol
     }
 }
-
-public nonisolated protocol StocksService: AssetsService, AssetsPagesService where Asset == StockInstrument {}

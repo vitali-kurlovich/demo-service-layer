@@ -8,5 +8,3 @@ public nonisolated struct CryptoPair: Equatable, Sendable {
         self.symbol = symbol
     }
 }
-
-public nonisolated protocol CryptoPairsService: AssetsService, AssetsPagesService where Asset == CryptoPair {}
