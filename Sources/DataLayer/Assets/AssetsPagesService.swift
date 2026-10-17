@@ -2,7 +2,7 @@
 //  Created by Kurlovich Vitali on 10/16/26.
 //
 
-public struct FetchPage {
+public nonisolated struct FetchPage: Sendable {
     public let size: Int
     public let page: Int
 
@@ -12,7 +12,7 @@ public struct FetchPage {
     }
 }
 
-public struct AssetsPage<Asset> {
+public nonisolated struct AssetsPage<Asset> {
     public let count: Int
     public let page: Int
     public let assets: [Asset]
